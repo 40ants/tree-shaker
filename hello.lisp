@@ -1,10 +1,3 @@
-(ql:quickload :serapeum)
-(ql:quickload :alexandria)
-(ql:quickload :dexador)
-(ql:quickload :yason)
-(ql:quickload :clack)
-
-
 (in-package :cl-user)
 
 
@@ -12,8 +5,18 @@
   (format t "Hello World!~%"))
 
 
-(defun save-lisp-tree-shake-and-die (file toplevel-fn &key (shake t) (compress t))
-  "A dumb tree shaker for SBCL written with lots of advice from nyef."
+(defun save-lisp-tree-shake-and-die (file toplevel-fn &key (fat nil) (shake t) (compress t))
+  "A dumb tree shaker for SBCL written with lots of advice from nyef.
+
+   When :FAT is given, then we load a bunch of libraries from Quicklisp before the dump."
+
+  (when fat
+    (ql:quickload :serapeum)
+    (ql:quickload :alexandria)
+    (ql:quickload :dexador)
+    (ql:quickload :yason)
+    (ql:quickload :clack))
+  
   ;; Taken from https://gist.github.com/burtonsamograd/f08f561264ff94391300
   (when shake
     (let (packages)
